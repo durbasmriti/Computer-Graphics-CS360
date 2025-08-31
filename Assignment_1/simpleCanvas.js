@@ -566,56 +566,60 @@ function drawBush() {
     mMatrix = popMatrix(matrixStack);
 }
 
-function drawBoat(translationX) {
-    // Base model matrix
+let boat2X = 0;
+let boat2Speed = 0.004;
+let boat2Range = 0.35;
+let boat2Dir = 1;
+
+function drawBoat(translationX, yOffset = 0, scaleFactor = 1, sailColor = [1, 0, 0, 0.9]) {
     mat4.identity(mMatrix);
+    mMatrix = mat4.translate(mMatrix, [translationX, yOffset, 0]);
 
-    mMatrix = mat4.translate(mMatrix, [translationX, 0, 0]);
-
+    // Boat base
     pushMatrix(matrixStack, mMatrix);
     let color = [0.83, 0.83, 0.83, 1];
-    mMatrix = mat4.translate(mMatrix, [0, -0.15, 0]);
-    mMatrix = mat4.scale(mMatrix, [0.18, 0.06, 1]);
+    mMatrix = mat4.translate(mMatrix, [0, -0.15 * scaleFactor, 0]);
+    mMatrix = mat4.scale(mMatrix, [0.18 * scaleFactor, 0.06 * scaleFactor, 1]);
     drawSquare(color, mMatrix);
     mMatrix = popMatrix(matrixStack);
 
+    // Boat sides
     pushMatrix(matrixStack, mMatrix);
-    mMatrix = mat4.translate(mMatrix, [-0.09, -0.15, 0]);
+    mMatrix = mat4.translate(mMatrix, [-0.09 * scaleFactor, -0.15 * scaleFactor, 0]);
     mMatrix = mat4.rotate(mMatrix, -3.15, [0, 0, 1]);
-    mMatrix = mat4.scale(mMatrix, [0.1, 0.06, 1]);
+    mMatrix = mat4.scale(mMatrix, [0.1 * scaleFactor, 0.06 * scaleFactor, 1]);
     drawTriangle(color, mMatrix);
     mMatrix = popMatrix(matrixStack);
 
     pushMatrix(matrixStack, mMatrix);
-    mMatrix = mat4.translate(mMatrix, [0.09, -0.15, 0]);
+    mMatrix = mat4.translate(mMatrix, [0.09 * scaleFactor, -0.15 * scaleFactor, 0]);
     mMatrix = mat4.rotate(mMatrix, -3.15, [0, 0, 1]);
-    mMatrix = mat4.scale(mMatrix, [0.1, 0.06, 1]);
+    mMatrix = mat4.scale(mMatrix, [0.1 * scaleFactor, 0.06 * scaleFactor, 1]);
     drawTriangle(color, mMatrix);
     mMatrix = popMatrix(matrixStack);
 
-    //vertical pole
+    // Vertical pole
     pushMatrix(matrixStack, mMatrix);
     color = [0, 0, 0, 1];
-    mMatrix = mat4.translate(mMatrix, [0.01, 0.006, 0]);
-    mMatrix = mat4.scale(mMatrix, [0.01, 0.25, 1]);
+    mMatrix = mat4.translate(mMatrix, [0.01 * scaleFactor, 0.006 * scaleFactor, 0]);
+    mMatrix = mat4.scale(mMatrix, [0.01 * scaleFactor, 0.25 * scaleFactor, 1]);
     drawSquare(color, mMatrix);
     mMatrix = popMatrix(matrixStack);
 
-    // slanted pole
+    // Slanted pole
     pushMatrix(matrixStack, mMatrix);
-    mMatrix = mat4.translate(mMatrix, [-0.03, -0.01, 0]);
+    mMatrix = mat4.translate(mMatrix, [-0.03 * scaleFactor, -0.01 * scaleFactor, 0]);
     mMatrix = mat4.rotate(mMatrix, 5.9, [0, 0, 1]);
-    mMatrix = mat4.scale(mMatrix, [0.005, 0.23, 1]);
+    mMatrix = mat4.scale(mMatrix, [0.005 * scaleFactor, 0.23 * scaleFactor, 1]);
     drawSquare(color, mMatrix);
     mMatrix = popMatrix(matrixStack);
 
-    //Sail
+    // Sail
     pushMatrix(matrixStack, mMatrix);
-    color = [1, 0, 0, 0.9];
-    mMatrix = mat4.translate(mMatrix, [0.115, 0.006, 0]);
+    mMatrix = mat4.translate(mMatrix, [0.115 * scaleFactor, 0.006 * scaleFactor, 0]);
     mMatrix = mat4.rotate(mMatrix, 4.72, [0, 0, 1]);
-    mMatrix = mat4.scale(mMatrix, [0.2, 0.2, 1]);
-    drawTriangle(color, mMatrix);
+    mMatrix = mat4.scale(mMatrix, [0.2 * scaleFactor, 0.2 * scaleFactor, 1]);
+    drawTriangle(sailColor, mMatrix);
     mMatrix = popMatrix(matrixStack);
 }
 
@@ -797,6 +801,9 @@ function drawScene() {
         translationX += translationSpeed * direction;
         if (Math.abs(translationX) > translationRange) direction *= -1;
 
+        boat2X += boat2Speed * boat2Dir;
+        if (Math.abs(boat2X) > boat2Range) boat2Dir *= -1;
+
         drawSky();
         drawMoon();
         drawCloud();
@@ -813,7 +820,9 @@ function drawScene() {
         drawCar();
         drawTrees();
 
-        drawBoat(translationX);
+        drawBoat(boat2X, 0.05, 0.7, [0.651, 0, 1, 1]);     // 2nd boat
+        drawBoat(translationX);           // 1st boat
+
         drawFan(rotationAngle);
 
         animation = requestAnimationFrame(animate);
@@ -862,4 +871,3 @@ function webGLStart() {
 
     drawScene();
 }
-

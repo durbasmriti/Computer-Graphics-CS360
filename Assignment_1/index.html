@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Scenery</title>
+  <script src="glMatrix-0.9.5.min.js"></script>
+  <script src="simpleCanvas.js"></script>
+</head>
+<body onload="webGLStart();">
+  <canvas id="scenery" width="900" height="900"></canvas>
+
+  <!-- Vertex Shader -->
+  <script id="shader-vs" type="x-shader/x-vertex">
+  attribute vec3 aPosition;
+  uniform mat4 uMMatrix;
+  void main(void) {
+      gl_Position = uMMatrix * vec4(aPosition, 1.0);
+  }
+  </script>
+
+  <!-- Fragment Shader -->
+  <script id="shader-fs" type="x-shader/x-fragment">
+  precision mediump float;
+  uniform vec4 color;
+  void main(void) {
+      gl_FragColor = color;
+  }
+  </script>
+
+  <div class="column">
+    <h3>Change Draw Mode:</h3>
+    <button onclick="changeView('p')">Point View</button>
+    <button onclick="changeView('w')">Wireframe View</button>
+    <button onclick="changeView('s')">Solid View</button>
+  </div>
+</body>
+</html>
